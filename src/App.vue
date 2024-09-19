@@ -1,10 +1,11 @@
 <script setup>
 import { computed, ref } from 'vue';
+import GenericInput from './components/genericInput.vue';
 
 const dice = ref(["-","-","-","-","-"])
 const diceLock = ref([false, false, false, false, false])
 const trowsCount = ref(0)
-const results = ref([false, false, false, false, false])
+const results = ref([false, false, false, false, false,false])
 const results2 = ref({equals:[false,false,false],chance:false})
 const allDicePoints = computed(()=>dice.value[0]+dice.value[1]+dice.value[2]+dice.value[3]+dice.value[4])
 
@@ -21,6 +22,12 @@ function throwDice(){
   trowsCount.value++
 }
 
+function smallReset(){
+  trowsCount.value=0
+  diceLock.value=[false, false, false, false, false]
+  dice.value=["-","-","-","-","-"]
+}
+
 function countCertainkind(kind){
   let sum=0
   dice.value.forEach(oneDice => {
@@ -29,9 +36,7 @@ function countCertainkind(kind){
     }
   });
   results.value[kind-1]=sum
-  trowsCount.value=0
-  diceLock.value=[false, false, false, false, false]
-  dice.value=["-","-","-","-","-"]
+  smallReset()
 }
 
 function checkEquals(number){
@@ -51,9 +56,7 @@ function checkEquals(number){
   }else{  
     results2.value.equals[number-3]=0
   }
-  trowsCount.value=0
-  diceLock.value=[false, false, false, false, false]
-  dice.value=["-","-","-","-","-"]
+  smallReset()
 }
 
 function checkSmallStreet(){
@@ -64,9 +67,7 @@ function checkSmallStreet(){
     }else{
       results2.value.smallStreet=0
     }
-  trowsCount.value=0
-  diceLock.value=[false, false, false, false, false]
-  dice.value=["-","-","-","-","-"]
+    smallReset()
 }
 
 function checkBigStreet(){
@@ -76,9 +77,7 @@ function checkBigStreet(){
     }else{
       results2.value.bigStreet=0
     }
-  trowsCount.value=0
-  diceLock.value=[false, false, false, false, false]
-  dice.value=["-","-","-","-","-"]
+    smallReset()
 }
 
 function checkFullHouse(){
@@ -92,23 +91,18 @@ function checkFullHouse(){
   }else{
     results2.value.fullHouse=0
   }
-  trowsCount.value=0
-  diceLock.value=[false, false, false, false, false]
-  dice.value=["-","-","-","-","-"]
+  smallReset()
 }
 
 function setChance(){
   results2.value.chance=allDicePoints.value
-  trowsCount.value=0
-  diceLock.value=[false, false, false, false, false]
-  dice.value=["-","-","-","-","-"]
+  smallReset()
 }
 </script>
 
 <template>
   <header>
     <h1>Kniffel</h1>
-    {{ trowsCount }}
     <button v-if="trowsCount<3" @click.prevent="throwDice()">Würfeln</button>
   </header>
     <body>
@@ -121,79 +115,16 @@ function setChance(){
         </div>
     </article>
     <article id="points">
-    {{ results }}
-      <span v-if="results[0] || results[0]===0">{{ results[0] }}</span>
-      <button v-else @click.prevent="countCertainkind(1)">1</button>
-      <span v-if="results[1] || results[1]===0">{{ results[1] }}</span>
-      <button v-else @click.prevent="countCertainkind(2)">2</button>
-      <span v-if="results[2] || results[2]===0">{{ results[2] }}</span>
-      <button v-else @click.prevent="countCertainkind(3)">3</button>
-      <span v-if="results[3] || results[3]===0">{{ results[3] }}</span>
-      <button v-else @click.prevent="countCertainkind(4)">4</button>
-      <span v-if="results[4] || results[4]===0">{{ results[4] }}</span>
-      <button v-else @click.prevent="countCertainkind(5)">5</button>
-      <span v-if="results[5] || results[5]===0">{{ results[5] }}</span>
-      <button v-else @click.prevent="countCertainkind(6)">6</button>
+    <GenericInput v-for="index in 6" :variable="results[index-1]" :specificfunction="()=>countCertainkind(index)" :text="index" />
     </article>
     <article id="points2">
-    {{results2}}
-    <span v-if="results2.fullHouse || results2.fullHouse === 0">{{ results2.fullHouse }}</span>
-    <button v-else @click.prevent="checkFullHouse()">FullHouse</button>
-    <span v-if="results2.smallStreet || results2.smallStreet === 0">{{ results2.smallStreet }}</span>
-    <button v-else @click.prevent="checkSmallStreet()">smallStreet</button>
-    <span v-if="results2.bigStreet || results2.bigStreet === 0">{{ results2.bigStreet }}</span>
-    <button v-else @click.prevent="checkBigStreet()">gibStreet</button>
-    <span v-if="results2.equals[0] || results2.equals[0] === 0">{{ results2.equals[0] }}</span>
-    <button v-else @click.prevent="checkEquals(3)">equals3</button>
-    <span v-if="results2.equals[1] || results2.equals[1] === 0">{{ results2.equals[1] }}</span>
-    <button v-else @click.prevent="checkEquals(4)">equals4</button>
-    <span v-if="results2.equals[2] || results2.equals[2] === 0">{{ results2.equals[2] }}</span>
-    <button v-else @click.prevent="checkEquals(5)">Kniffel</button>
-    <span v-if="results2.chance || results2.chance === 0">{{ results2.chance }}</span>
-    <button v-else @click.prevent="setChance()">Chance</button>
+    <GenericInput :variable="results2.fullHouse" :specificfunction="()=>checkFullHouse()" text="FullHouse" />
+    <GenericInput :variable="results2.smallStreet" :specificfunction="()=>checkSmallStreet()" text="smallStreet" />
+    <GenericInput :variable="results2.bigStreet" :specificfunction="()=>checkBigStreet()" text="bigStreet" />
+    <GenericInput :variable="results2.equals[0]" :specificfunction="()=>checkEquals(3)" text="equals3" />
+    <GenericInput :variable="results2.equals[1]" :specificfunction="()=>checkEquals(4)" text="equals4" />
+    <GenericInput :variable="results2.equals[2]" :specificfunction="()=>checkEquals(5)" text="Kniffel" />
+    <GenericInput :variable="results2.chance" :specificfunction="()=>setChance()" text="Chance" />
     </article>
   </body>
 </template>
-
-<style>
-  body{
-    background-image: url(./assets/pic.jpeg);
-    background-size: cover;
-    padding:0;
-    margin: 0;
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-  }
-  header{
-    background-color: rgba(0, 0, 0, 0.7);
-    color: white;
-  }
-  button{
-    width: 100px;
-    height: 50px;
-    margin: 10px;
-  }
-  #dices{
-    display: flex;
-    justify-content: space-around;
-  }
-  .oneDice{
-    background-color: wheat;
-    color: black;
-    width: 50px;
-    height: 50px;
-    font-size: xx-large;
-    text-align: center;
-  }
-  span{
-    background-color: wheat;
-    color: black;
-    width: 50px;
-    height: 50px;
-    font-size: xx-large;
-    text-align: center;
-    margin: 10px;
-  }
-  .locked{
-    background-color: red;
-  }
-</style>
