@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue';
-import GenericInput from './components/genericInput.vue';
+import GenericInput from './components/GenericInput.vue';
 
 const dice = ref(["-","-","-","-","-"])
 const diceLock = ref([false, false, false, false, false])
@@ -98,22 +98,27 @@ function setChance(){
   results2.value.chance=allDicePoints.value
   smallReset()
 }
+
+function newGame(){
+  results.value = [false, false, false, false, false,false]
+  results2.value = {equals:[false,false,false],chance:false}
+  smallReset()
+}
 </script>
 
 <template>
-  <header>
+  <header id="dices">
     <h1>Kniffel</h1>
-    <button v-if="trowsCount<3" @click.prevent="throwDice()">Würfeln</button>
-  </header>
-    <body>
-      <article id="dices">
         <div class="oneDice" 
           v-for="(oneDice, index) in dice" 
           :class="diceLock[index]?'locked':''"
           @click.prevent="lockDice(index)">
           {{ oneDice }}
         </div>
-    </article>
+    <button v-if="trowsCount<3" @click.prevent="throwDice()">Würfeln</button>
+    <button @click.prevent="newGame()">New Game</button>
+  </header>
+    <main>
     <article id="points">
     <GenericInput v-for="index in 6" :variable="results[index-1]" :specificfunction="()=>countCertainkind(index)" :text="index" />
     </article>
@@ -126,5 +131,5 @@ function setChance(){
     <GenericInput :variable="results2.equals[2]" :specificfunction="()=>checkEquals(5)" text="Kniffel" />
     <GenericInput :variable="results2.chance" :specificfunction="()=>setChance()" text="Chance" />
     </article>
-  </body>
+  </main>
 </template>
