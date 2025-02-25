@@ -1,6 +1,8 @@
 <script setup>
 import { computed, ref } from 'vue';
 import GenericInput from './components/GenericInput.vue';
+import DiceIcon from './assets/Icons/DiceIcon.vue';
+import ReloadIcon from './assets/Icons/ReloadIcon.vue';
 
 const dice = ref(["-","-","-","-","-"])
 const diceLock = ref([false, false, false, false, false])
@@ -108,28 +110,27 @@ function newGame(){
 
 <template>
   <header id="dices">
-    <h1>Kniffel</h1>
-        <div class="oneDice" 
-          v-for="(oneDice, index) in dice" 
-          :class="diceLock[index]?'locked':''"
-          @click.prevent="lockDice(index)">
-          {{ oneDice }}
-        </div>
-    <button v-if="trowsCount<3" @click.prevent="throwDice()">Würfeln</button>
-    <button @click.prevent="newGame()">New Game</button>
+    <button v-if="trowsCount<3" @click.prevent="throwDice()"><DiceIcon/></button>
+    <div class="oneDice" 
+      v-for="(oneDice, index) in dice" 
+      :class="diceLock[index]?'locked':''"
+      @click.prevent="lockDice(index)">
+      {{ oneDice }}
+    </div>
+    <button @click.prevent="newGame()"><ReloadIcon/></button>
   </header>
     <main>
     <article id="points">
-    <GenericInput v-for="index in 6" :variable="results[index-1]" :specificfunction="()=>countCertainkind(index)" :text="index" />
+    <GenericInput v-for="index in 6" :variable="results[index-1]" :specificfunction="()=>countCertainkind(index)" :text="index" :compareValue="3*index"/>
     </article>
     <article id="points2">
-    <GenericInput :variable="results2.fullHouse" :specificfunction="()=>checkFullHouse()" text="FullHouse" />
-    <GenericInput :variable="results2.smallStreet" :specificfunction="()=>checkSmallStreet()" text="smallStreet" />
-    <GenericInput :variable="results2.bigStreet" :specificfunction="()=>checkBigStreet()" text="bigStreet" />
-    <GenericInput :variable="results2.equals[0]" :specificfunction="()=>checkEquals(3)" text="equals3" />
-    <GenericInput :variable="results2.equals[1]" :specificfunction="()=>checkEquals(4)" text="equals4" />
-    <GenericInput :variable="results2.equals[2]" :specificfunction="()=>checkEquals(5)" text="Kniffel" />
-    <GenericInput :variable="results2.chance" :specificfunction="()=>setChance()" text="Chance" />
+    <GenericInput :variable="results2.fullHouse" :specificfunction="()=>checkFullHouse()" text="FullHouse" compareValue="25"/>
+    <GenericInput :variable="results2.smallStreet" :specificfunction="()=>checkSmallStreet()" text="smallStreet" compareValue="30"/>
+    <GenericInput :variable="results2.bigStreet" :specificfunction="()=>checkBigStreet()" text="bigStreet" compareValue="40"/>
+    <GenericInput :variable="results2.equals[0]" :specificfunction="()=>checkEquals(3)" text="equals3" compareValue="12"/>
+    <GenericInput :variable="results2.equals[1]" :specificfunction="()=>checkEquals(4)" text="equals4" compareValue="16"/>
+    <GenericInput :variable="results2.equals[2]" :specificfunction="()=>checkEquals(5)" text="Kniffel" compareValue="50"/>
+    <GenericInput :variable="results2.chance" :specificfunction="()=>setChance()" text="Chance" compareValue="16"/>
     </article>
   </main>
 </template>

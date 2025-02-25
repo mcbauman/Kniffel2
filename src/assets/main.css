@@ -13,6 +13,8 @@ body{
   main{
     display: flex;
     justify-content: space-around;
+    background-color: rgba(0, 0, 0, 0.54);
+    backdrop-filter: blur(10px);
   }
 
   #dices{
@@ -31,8 +33,16 @@ body{
     display: block;
     border: none;
   }
+
+  header > button{
+    width: 100px;
+  }
+
   button:hover, span:hover, .oneDice:hover{
-    box-shadow: 0 0 10px red inset;
+    transition: all 500ms;
+    box-shadow: 0 0 10px blue inset;
+    background-color: rgb(208, 208, 208);
+    color: blue;
   }
 
   button{
@@ -45,9 +55,12 @@ body{
     text-align: center;
   }
   span{
-    background-color: greenyellow;
+    background-color: rgb(134, 211, 134);
     color: black;
   }
+  .red{
+    background-color: rgb(231, 154, 154);
+  }
   .locked{
-    background-color: green;
+    background-color: rgb(134, 171, 211);
   }
