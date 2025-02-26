@@ -11,8 +11,10 @@ body{
   }
 
   main{
+    height: 700px;
     display: flex;
     justify-content: space-around;
+    align-items: center;
     background-color: rgba(0, 0, 0, 0.54);
     backdrop-filter: blur(10px);
   }

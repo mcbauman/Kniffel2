@@ -10,6 +10,8 @@ const trowsCount = ref(0)
 const results = ref([false, false, false, false, false,false])
 const results2 = ref({equals:[false,false,false],chance:false})
 const allDicePoints = computed(()=>dice.value[0]+dice.value[1]+dice.value[2]+dice.value[3]+dice.value[4])
+const highscore = ref(JSON.parse(localStorage.getItem("highscore"))||0)
+const score = ref(0)
 
 function lockDice(index){
   diceLock.value[index]=!diceLock.value[index]
@@ -28,6 +30,9 @@ function smallReset(){
   trowsCount.value=0
   diceLock.value=[false, false, false, false, false]
   dice.value=["-","-","-","-","-"]
+  console.log("SmallReset");
+  countScore()
+  writeScore()
 }
 
 function countCertainkind(kind){
@@ -105,6 +110,32 @@ function newGame(){
   results.value = [false, false, false, false, false,false]
   results2.value = {equals:[false,false,false],chance:false}
   smallReset()
+  highscore.value = ref(JSON.parse(localStorage.getItem("highscore")))
+}
+
+function countScore(){
+  results.value.forEach(element=>{
+    if(element){
+      score.value += element
+    }
+  })
+  results2.value.equals.forEach(element=>{
+    if(element){
+      score.value += element
+    }
+  })
+  if(results2.value.chance){
+    score.value += results2.value.chance
+  }
+  console.log("countScoreExec",score.value);
+  
+}
+
+function writeScore(){
+  if(score.value>highscore.value){
+    localStorage.setItem("highscore",JSON.stringify(score.value))
+    console.log("NEWHIGHSCOREWRITTEN",score.value);
+  }
 }
 </script>
 
@@ -131,6 +162,12 @@ function newGame(){
     <GenericInput :variable="results2.equals[1]" :specificfunction="()=>checkEquals(4)" text="equals4" compareValue="16"/>
     <GenericInput :variable="results2.equals[2]" :specificfunction="()=>checkEquals(5)" text="Kniffel" compareValue="50"/>
     <GenericInput :variable="results2.chance" :specificfunction="()=>setChance()" text="Chance" compareValue="16"/>
+    </article>
+    <article>
+      <span>
+        highscore: {{ highscore }}
+      </span>
+      <span :class="score<=highscore?'red':'green'">your Score: {{ score }}</span>
     </article>
   </main>
 </template>
