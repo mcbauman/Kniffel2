@@ -36,6 +36,10 @@ body{
     border: none;
   }
 
+  .wider{
+    width: 350px;;
+  }
+
   header > button{
     width: 100px;
   }

@@ -110,10 +110,12 @@ function newGame(){
   results.value = [false, false, false, false, false,false]
   results2.value = {equals:[false,false,false],chance:false}
   smallReset()
-  highscore.value = ref(JSON.parse(localStorage.getItem("highscore")))
+  highscore.value = ref(JSON.parse(localStorage.getItem("highscore"))||0)
+  score.value=0
 }
 
 function countScore(){
+  score.value=0
   results.value.forEach(element=>{
     if(element){
       score.value += element
@@ -124,6 +126,15 @@ function countScore(){
       score.value += element
     }
   })
+  if(results2.value.smallStreet){
+    score.value += results2.value.smallStreet
+  }
+  if(results2.value.bigStreet){
+    score.value += results2.value.bigStreet
+  }
+  if(results2.value.fullHouse){
+    score.value += results2.value.fullHouse
+  }
   if(results2.value.chance){
     score.value += results2.value.chance
   }
@@ -164,10 +175,12 @@ function writeScore(){
     <GenericInput :variable="results2.chance" :specificfunction="()=>setChance()" text="Chance" compareValue="16"/>
     </article>
     <article>
-      <span>
+      <span class="wider">
         highscore: {{ highscore }}
       </span>
-      <span :class="score<=highscore?'red':'green'">your Score: {{ score }}</span>
+      <span :class="score<=highscore?'red wider':'green wider'">your Score: {{ score }}</span>
     </article>
   </main>
+  <!-- <pre>{{ results }}</pre>
+  <pre>{{ results2 }}</pre> -->
 </template>
